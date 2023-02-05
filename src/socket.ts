@@ -13,12 +13,15 @@ const heartbit = setInterval(() => {
         if (!ws.isAlive) return ws.terminate();
         ws.isAlive = false;
         ws.ping();
+        ws.send('ping')
     });
 }, 30_000);
 
 wss.on('connection', (ws: WSC, req) => {
     ws.isAlive = true
     console.log(`Client ${req.socket.remoteAddress} connected`)
+
+    ws.on('message', () => ws.isAlive = true)
 
     ws.on('close', () => {
         console.log(`Client ${req.socket?.remoteAddress} disconnected`)
